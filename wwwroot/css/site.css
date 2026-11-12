@@ -1,0 +1,102 @@
+:root {
+  /* Основные цвета */
+  --mist-dark: #23272A;       /* Тёмный туманный для текста и шапки */
+  --mist-gray: #7A8993;      /* Туманно-серый */
+  --mist-light: #F4F6F7;     /* Светло-серый фон */
+  --mist-white: #FFFFFF;     /* Чистый белый для карточек */
+
+  /* Пыльно-зеленый (природный стиль) */
+  --sage-green: #7a8b7b;
+  --sage-green-light: #9ab09c;
+  --sage-green-dark: #2c382e;
+
+  /* Акцентные розовые (Сакура) */
+  --sakura-soft: #F9D8CE;    /* Нежно-розовый */
+  --sakura-accent: #E8A5B8;  /* Основной розовый для кнопок */
+  --sakura-hover: #D88F9E;   /* Наведение на кнопки */
+  --sakura-pink: #ffb7c5;
+
+  /* Шрифты и границы */
+  --border-color: #E2E8F0;
+  --font-main: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+body {
+  background-color: var(--mist-light);
+  color: var(--mist-dark);
+  font-family: var(--font-main);
+  margin: 0;
+  padding: 0;
+}
+
+/* Фикс футера: нежный пыльно-темно-зеленый фон и контрастный белый/светлый текст */
+footer {
+  background-color: var(--sage-green-dark) !important;
+  color: #f8f9fa !important;
+}
+
+footer a, footer .text-muted {
+  color: #d1d8d2 !important;
+  text-decoration: none;
+}
+
+footer a:hover {
+  color: var(--sakura-pink) !important;
+}
+
+/* Заглушки для картинок в пыльно-зеленом стиле */
+.img-placeholder {
+  background: linear-gradient(135deg, var(--sage-green) 0%, var(--sage-green-light) 100%);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+}
+
+/* Кнопки в стиле Сакуры */
+.btn-sakura {
+  background-color: var(--sakura-accent);
+  color: #fff;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.btn-sakura:hover {
+  background-color: var(--sakura-hover);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(232, 165, 184, 0.4);
+}
+
+.btn-sakura-outline {
+  border: 1px solid var(--sakura-accent);
+  color: var(--mist-dark);
+  transition: all 0.3s ease;
+}
+
+.btn-sakura-outline:hover {
+  background-color: var(--sakura-soft);
+  color: var(--mist-dark);
+}
+
+.text-pink {
+  color: var(--sakura-accent);
+}
+
+/* Фикс горизонтального скролла и пустого пространства справа на мобилках */
+html, body {
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+}
+
+.container, .container-fluid {
+  overflow-x: hidden;
+}
+
+/* Фикс для адаптивности контейнера карты Яндекс */
+.ymaps-map-container,
+iframe[src*="yandex"],
+script + ymaps {
+  max-width: 100% !important;
+}

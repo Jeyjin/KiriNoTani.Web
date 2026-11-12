@@ -1,0 +1,82 @@
+﻿@model IEnumerable<KiriNoTani.Web.Models.Booking>
+
+@{
+    ViewData["Title"] = "Календарь бронирований";
+    DateTime currentDate = ViewBag.CurrentDate;
+    var prevMonth = currentDate.AddMonths(-1);
+    var nextMonth = currentDate.AddMonths(1);
+    int daysInMonth = DateTime.DaysInMonth(currentDate.Year, currentDate.Month);
+    int startDayOfWeek = (int)currentDate.DayOfWeek;
+    startDayOfWeek = startDayOfWeek == 0 ? 7 : startDayOfWeek;
+}
+
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-1">
+        <div>
+            <span class="text-pink fw-bold text-uppercase small tracking-widest">Панель управления</span>
+            <h1 class="h3 fw-bold mb-0">Календарь бронирований</h1>
+        </div>
+        <div class="d-flex gap-2">
+            <a asp-action="Calendar" asp-route-year="@prevMonth.Year" asp-route-month="@prevMonth.Month" class="btn btn-sakura-outline rounded-pill px-3">
+                <i class="bi bi-chevron-left me-1"></i> @prevMonth.ToString("MMMM yyyy")
+            </a>
+            <span class="btn btn-sakura rounded-pill px-4 fw-bold disabled">@currentDate.ToString("MMMM yyyy")</span>
+            <a asp-action="Calendar" asp-route-year="@nextMonth.Year" asp-route-month="@nextMonth.Month" class="btn btn-sakura-outline rounded-pill px-3">
+                @nextMonth.ToString("MMMM yyyy") <i class="bi bi-chevron-right ms-1"></i>
+            </a>
+        </div>
+    </div>
+
+    <div class="my-4">
+        @await Html.PartialAsync("_AdminNav")
+    </div>
+
+    <!-- Сетка Календаря -->
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white p-4">
+        <div class="row text-center fw-bold text-muted py-2 border-bottom">
+            <div class="col">Пн</div>
+            <div class="col">Вт</div>
+            <div class="col">Ср</div>
+            <div class="col">Чт</div>
+            <div class="col">Пт</div>
+            <div class="col text-pink">Сб</div>
+            <div class="col text-pink">Вс</div>
+        </div>
+
+        <div class="row g-2 mt-2">
+            @for (int i = 1; i < startDayOfWeek; i++)
+            {
+                <div class="col p-3 bg-light rounded-3 opacity-25" style="min-height: 110px;"></div>
+            }
+
+            @for (int day = 1; day <= daysInMonth; day++)
+            {
+                var dayDate = new DateTime(currentDate.Year, currentDate.Month, day);
+                var dayBookings = Model.Where(b => b.CheckInDate.Date == dayDate.Date).ToList();
+
+                <div class="col p-2 border rounded-3 bg-white" style="min-height: 110px;">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="fw-bold fs-6 @(dayDate.Date == DateTime.Today ? "text-pink border-bottom border-2 border-danger" : "")">@day</span>
+                        @if (dayBookings.Any())
+                        {
+                            <span class="badge bg-pink text-white rounded-pill small">@dayBookings.Count</span>
+                        }
+                    </div>
+
+                    @foreach (var b in dayBookings)
+                    {
+                        <div class="p-1 mb-1 rounded small @(b.Status == "Подтверждено" ? "bg-success bg-opacity-10 text-success" : "bg-warning bg-opacity-10 text-warning")" style="font-size: 0.75rem;" title="@b.GuestName (@b.Phone)">
+                            <div class="fw-bold text-truncate">@b.GuestName</div>
+                            <div class="text-truncate">@(b.Service?.Title ?? "Заявка")</div>
+                        </div>
+                    }
+                </div>
+
+                if ((day + startDayOfWeek - 1) % 7 == 0)
+                {
+                    <div class="w-100"></div>
+                }
+            }
+        </div>
+    </div>
+</div>

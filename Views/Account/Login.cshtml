@@ -1,0 +1,40 @@
+﻿@model KiriNoTani.Web.Models.LoginViewModel
+
+@{
+ViewData["Title"] = "Вход в кабинет";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white">
+                <div class="text-center mb-4">
+                    <span class="text-pink fw-bold text-uppercase small tracking-widest">KiriNoTani 霧の谷</span>
+                    <h1 class="h3 fw-bold mt-1">Вход в кабинет</h1>
+                    <p class="text-muted small">Введите свои данные для входа</p>
+                </div>
+
+                <form asp-action="Login" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label fw-medium">Email</label>
+                        <input asp-for="Email" class="form-control rounded-pill border-0 bg-light py-2 px-3" placeholder="name@example.com" required />
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Password" class="form-label fw-medium">Пароль</label>
+                        <input asp-for="Password" class="form-control rounded-pill border-0 bg-light py-2 px-3" placeholder="••••••••" required />
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-sakura w-100 rounded-pill py-3 fw-bold shadow-sm mb-3">Войти</button>
+                    <div class="text-center">
+                        <a asp-action="Register" class="text-muted small text-decoration-none">Еще нет аккаунта? Зарегистрироваться</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

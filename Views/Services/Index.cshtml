@@ -1,0 +1,64 @@
+﻿@model IEnumerable<KiriNoTani.Web.Models.Service>
+
+@{
+    ViewData["Title"] = "Наши услуги";
+}
+
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <span class="text-pink fw-bold text-uppercase small tracking-widest">Каталог</span>
+        <h1 class="fw-bold">Услуги и размещение</h1>
+        <p class="text-muted">Выберите подходящий вариант для вашего отдыха в KiriNoTani</p>
+    </div>
+
+    <div class="row g-4">
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var service in Model)
+            {
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm rounded-4 h-100 bg-white overflow-hidden d-flex flex-column">
+                        @if (string.IsNullOrEmpty(service.ImageUrl))
+                        {
+                            <div class="img-placeholder" style="height: 220px;">
+                                <i class="bi bi-tree fs-1 opacity-75"></i>
+                            </div>
+                        }
+                        else
+                        {
+                            <img src="@service.ImageUrl" class="card-img-top" alt="@service.Title" style="height: 220px; object-fit: cover;">
+                        }
+                        <div class="card-body p-4 d-flex flex-column justify-content-between flex-grow-1">
+                            <div>
+                                <h3 class="h5 fw-bold mb-2">@service.Title</h3>
+                                <p class="text-muted small mb-3">@service.Description</p>
+                            </div>
+                            <div>
+                                <div class="d-flex align-items-center justify-content-between mb-3">
+                                    <span class="text-pink fw-bold fs-5">@service.Price.ToString("N0") ₽</span>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <!-- Кнопка Забронировать -->
+                                    <a asp-controller="Booking" asp-action="Index" asp-route-serviceId="@service.Id" class="btn btn-sakura rounded-pill flex-grow-1 py-2 fw-bold text-center">
+                                        Забронировать
+                                    </a>
+                                    
+                                    <!-- Кнопка Подробнее -->
+                                    <a asp-controller="Services" asp-action="Details" asp-route-id="@service.Id" class="btn btn-sakura-outline rounded-pill py-2 px-3 text-center" title="Подробнее">
+                                        <i class="bi bi-info-circle"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12 text-center py-5 text-muted">
+                Услуги пока не добавлены.
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,89 @@
+﻿@model IEnumerable<KiriNoTani.Web.Models.Review>
+
+@{
+    ViewData["Title"] = "Модерация отзывов";
+}
+
+<div class="container py-5">
+    <span class="text-pink fw-bold text-uppercase small tracking-widest">Панель управления</span>
+    <h1 class="h3 fw-bold mb-4">Отзывы гостей</h1>
+
+    @await Html.PartialAsync("_AdminNav")
+
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="py-3 px-4">Дата</th>
+                        <th class="py-3">Автор</th>
+                        <th class="py-3">Оценка</th>
+                        <th class="py-3">Текст отзыва</th>
+                        <th class="py-3">Статус</th>
+                        <th class="py-3 text-end px-4">Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var review in Model)
+                        {
+                            <tr>
+                                <td class="px-4 text-muted small">@review.CreatedAt.ToString("dd.MM.yyyy HH:mm")</td>
+                                <td class="fw-bold">@review.Author</td>
+                                <td>⭐ @review.Rating / 5</td>
+                                <td class="text-muted" style="max-width: 300px;">@review.Content</td>
+                                <td>
+                                    @if (review.IsApproved)
+                                    {
+                                        <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill">Опубликован</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning bg-opacity-10 text-warning px-3 py-2 rounded-pill">На модерации</span>
+                                    }
+                                </td>
+                                <td class="text-end px-4">
+                                    <div class="d-inline-flex gap-2">
+                                        @if (!review.IsApproved && User.IsInRole("Admin"))
+                                        {
+                                            <form asp-action="ApproveReview" method="post" class="d-inline">
+                                                <input type="hidden" name="id" value="@review.Id" />
+                                                <button type="submit" class="btn btn-sm btn-success rounded-pill px-3">
+                                                    <i class="bi bi-check-lg me-1"></i> Одобрить
+                                                </button>
+                                            </form>
+                                        }
+
+                                        <form asp-action="ToggleFeaturedReview" method="post" class="d-inline">
+                                            <input type="hidden" name="id" value="@review.Id" />
+                                            <button type="submit" class="btn btn-sm @(review.IsFeatured ? "btn-warning text-white" : "btn-outline-warning") rounded-pill px-3">
+                                                <i class="bi bi-star-fill me-1"></i> @(review.IsFeatured ? "На главной" : "На главную")
+                                            </button>
+                                        </form>
+
+                                        @if (User.IsInRole("Admin"))
+                                        {
+                                            <form asp-action="DeleteReview" method="post" class="d-inline">
+                                                <input type="hidden" name="id" value="@review.Id" />
+                                                <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center py-4 text-muted">Отзывов пока нет.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

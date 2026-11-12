@@ -1,0 +1,53 @@
+﻿@model IEnumerable<KiriNoTani.Web.Models.User>
+
+@{
+    ViewData["Title"] = "Управление пользователями";
+}
+
+<div class="container py-5">
+    <span class="text-pink fw-bold text-uppercase small tracking-widest">Панель управления</span>
+    <h1 class="h3 fw-bold mb-4">Пользователи и Роли</h1>
+
+    @await Html.PartialAsync("_AdminNav")
+
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="py-3 px-4">Имя</th>
+                        <th class="py-3">Email</th>
+                        <th class="py-3">Текущая роль</th>
+                        <th class="py-3 text-end px-4">Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model)
+                    {
+                        <tr>
+                            <td class="px-4 fw-bold">@user.Name</td>
+                            <td class="text-muted">@user.Email</td>
+                            <td>
+                                <span class="badge @(user.Role == "Admin" ? "bg-danger" : user.Role == "Manager" ? "bg-primary" : "bg-secondary") px-3 py-2 rounded-pill">@user.Role</span>
+                            </td>
+                            <td class="text-end px-4">
+                                <form asp-action="ChangeUserRole" method="post" class="d-inline me-1">
+                                    <input type="hidden" name="id" value="@user.Id" />
+                                    <select name="role" class="form-select form-select-sm d-inline-block w-auto rounded-pill" onchange="this.form.submit()">
+                                        <option value="User" selected="@(user.Role == "User")">User</option>
+                                        <option value="Manager" selected="@(user.Role == "Manager")">Manager</option>
+                                        <option value="Admin" selected="@(user.Role == "Admin")">Admin</option>
+                                    </select>
+                                </form>
+                                <form asp-action="DeleteUser" method="post" class="d-inline">
+                                    <input type="hidden" name="id" value="@user.Id" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill"><i class="bi bi-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

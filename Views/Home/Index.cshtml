@@ -1,0 +1,205 @@
+﻿@{
+    ViewData["Title"] = "Главная";
+}
+
+<!-- 1. Главный баннер (Hero Section) -->
+<section class="hero-section text-white d-flex align-items-center position-relative rounded-4 overflow-hidden my-4 shadow-sm" style="background: linear-gradient(135deg, rgba(44, 56, 46, 0.88), rgba(122, 139, 123, 0.75)), url('/images/hero-bg.jpg') center/cover no-repeat; min-height: 80vh;">
+    <div class="container text-center py-5">
+        <span class="badge bg-white text-dark px-3 py-2 rounded-pill mb-3 fw-light tracking-wide">⛩️ Традиционный отдых в японском стиле</span>
+        <h1 class="display-3 fw-bold mb-3 font-serif">KiriNoTani • Долина Тумана</h1>
+        <p class="lead mb-4 mx-auto" style="max-width: 600px;">Погрузитесь в атмосферу умиротворения, природной гармонии и традиционных онсэнов в самом сердце живописной природы.</p>
+        <div class="d-flex justify-content-center gap-3">
+            <a asp-controller="Booking" asp-action="Index" class="btn btn-sakura btn-lg px-4 rounded-pill">Забронировать отдых</a>
+            <a asp-controller="Services" asp-action="Index" class="btn btn-outline-light btn-lg px-4 rounded-pill">Наши услуги</a>
+        </div>
+    </div>
+</section>
+
+<!-- 2. Краткое описание «О базе» -->
+<section class="py-5 bg-white">
+    <div class="container py-4">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <div class="p-3 bg-light rounded-4 shadow-sm border border-secondary border-opacity-10">
+                    <div class="ratio ratio-4x3 bg-secondary rounded-3 d-flex align-items-center justify-content-center text-white-50">
+                        <span>[ Фотографии базы отдыха ]</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <span class="text-pink fw-bold text-uppercase small tracking-widest">О философии базы</span>
+                <h2 class="fw-bold mb-4">Гармония с природой и японская эстетика</h2>
+                <p class="text-muted mb-3">База отдыха <strong>KiriNoTani</strong> создана для тех, кто хочет отдохнуть от городской суеты. Архитектура в стиле традиционных японских домиков минка, утренние туманы над водой и заботливый сервис подарят вам незабываемый релакс.</p>
+                <ul class="list-unstyled text-muted mb-4">
+                    <li class="mb-2"><i class="bi bi-check2 text-pink me-2"></i>Экологичные материалы и аутентичный интерьер</li>
+                    <li class="mb-2"><i class="bi bi-check2 text-pink me-2"></i>Индивидуальные банные чаны и японские беседки</li>
+                    <li class="mb-2"><i class="bi bi-check2 text-pink me-2"></i>Полное уединение и живописные ландшафты</li>
+                </ul>
+                <a asp-controller="Home" asp-action="About" class="btn btn-sakura-outline rounded-pill px-4">Подробнее о базе</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 3. Основные услуги (динамически из БД) -->
+<section class="py-5">
+    <div class="container py-4">
+        <div class="text-center mb-5">
+            <span class="text-pink fw-bold text-uppercase small">Комфорт и досуг</span>
+            <h2 class="fw-bold">Популярные услуги</h2>
+        </div>
+        <div class="row g-4">
+            @if (ViewBag.FeaturedServices != null)
+            {
+                @foreach (var service in (List<KiriNoTani.Web.Models.Service>)ViewBag.FeaturedServices)
+                {
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm rounded-4 h-100 bg-white overflow-hidden d-flex flex-column">
+                            @if (string.IsNullOrEmpty(service.ImageUrl))
+                            {
+                                <div class="img-placeholder" style="height: 220px;">
+                                    <i class="bi bi-tree fs-1 opacity-75"></i>
+                                </div>
+                            }
+                            else
+                            {
+                                <img src="@service.ImageUrl" class="card-img-top" alt="@service.Title" style="height: 220px; object-fit: cover;">
+                            }
+                            <div class="card-body p-4 d-flex flex-column justify-content-between flex-grow-1">
+                                <div>
+                                    <h3 class="h5 fw-bold mb-2">@service.Title</h3>
+                                    <p class="text-muted small mb-3">@service.Description</p>
+                                </div>
+                                <div>
+                                    <div class="d-flex align-items-center justify-content-between mb-3">
+                                        <span class="text-pink fw-bold fs-5">@service.Price.ToString("N0") ₽</span>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <!-- КНОПКА ЗАБРОНИРОВАТЬ С ID УСЛУГИ -->
+                                        <a asp-controller="Booking" asp-action="Index" asp-route-serviceId="@service.Id" class="btn btn-sakura rounded-pill flex-grow-1 py-2 fw-bold text-center">Забронировать</a>
+                                        
+                                        <!-- КНОПКА ПОДРОБНЕЕ -->
+                                        <a asp-controller="Services" asp-action="Details" asp-route-id="@service.Id" class="btn btn-sakura-outline rounded-pill py-2 px-3 text-center" title="Подробнее"><i class="bi bi-info-circle"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+        <div class="text-center mt-5">
+            <a asp-controller="Services" asp-action="Index" class="btn btn-sakura-outline rounded-pill px-4">Смотреть все услуги</a>
+        </div>
+    </div>
+</section>
+
+<!-- 4. Быстрая форма бронирования (ИСПРАВЛЕНА: отправляет данные в BookingController) -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="p-4 p-md-5 rounded-4 shadow-sm" style="background-color: var(--mist-light);">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-4">
+                    <h3 class="fw-bold mb-2">Быстрое бронирование</h3>
+                    <p class="text-muted mb-0">Выберите услугу, дату и время для быстрого перехода к заказу.</p>
+                </div>
+                <div class="col-lg-8">
+                    <form asp-controller="Booking" asp-action="Index" method="get" class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label small text-muted fw-bold">Услуга</label>
+                            <select name="serviceId" class="form-select rounded-pill border-0 shadow-sm py-2 px-3" required>
+                                <option value="">-- Выберите услугу --</option>
+                                @if (ViewBag.FeaturedServices != null)
+                                {
+                                    foreach (var s in (List<KiriNoTani.Web.Models.Service>)ViewBag.FeaturedServices)
+                                    {
+                                        <option value="@s.Id">@s.Title</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small text-muted fw-bold">Дата заезда</label>
+                            <input type="date" name="checkInDate" class="form-control rounded-pill border-0 shadow-sm py-2 px-3" min="@DateTime.Today.ToString("yyyy-MM-dd")" value="@DateTime.Today.AddDays(1).ToString("yyyy-MM-dd")" required />
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label small text-muted fw-bold">Время</label>
+                            <select name="timeSlot" class="form-select rounded-pill border-0 shadow-sm py-2 px-3">
+                                <option value="12:00">12:00</option>
+                                <option value="14:00" selected>14:00</option>
+                                <option value="16:00">16:00</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button type="submit" class="btn btn-sakura w-100 rounded-pill py-2 fw-bold shadow-sm">Перейти к заказу</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 5. Блок с Избранными отзывами клиентов (из БД) -->
+<section class="py-5">
+    <div class="container py-4">
+        <div class="text-center mb-5">
+            <span class="text-pink fw-bold text-uppercase small">Впечатления</span>
+            <h2 class="fw-bold">Отзывы наших гостей</h2>
+        </div>
+        <div class="row g-4">
+            @if (ViewBag.FeaturedReviews != null)
+            {
+                @foreach (var review in (List<KiriNoTani.Web.Models.Review>)ViewBag.FeaturedReviews)
+                {
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100">
+                            <div class="text-warning mb-2 small">
+                                @for (int i = 0; i < review.Rating; i++)
+                                {
+                                    <i class="bi bi-star-fill"></i>
+                                }
+                            </div>
+                            <p class="text-muted small mb-3">«@review.Content»</p>
+                            <h6 class="fw-bold mb-0">@review.Author</h6>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+        <div class="text-center mt-5">
+            <a asp-controller="Reviews" asp-action="Index" class="btn btn-sakura-outline rounded-pill px-4">Читать все отзывы и оставить свой</a>
+        </div>
+    </div>
+</section>
+
+<!-- 6. Контактная информация и Карта проезда -->
+<!-- 6. Контактная информация и Карта проезда -->
+<section class="py-5 bg-white">
+    <div class="container py-4">
+        <div class="text-center mb-5">
+            <span class="text-pink fw-bold text-uppercase small">Как нас найти</span>
+            <h2 class="fw-bold">Контакты и схема проезда</h2>
+        </div>
+        <div class="row g-4 align-items-center">
+            <div class="col-lg-5">
+                <div class="p-4 bg-light rounded-4 shadow-sm border border-secondary border-opacity-10">
+                    <h4 class="fw-bold mb-4">KiriNoTani • 霧の谷</h4>
+                    <p class="text-muted small mb-3"><i class="bi bi-geo-alt text-pink me-2"></i><strong>Адрес:</strong> Японская долина, ул. Туманная, д. 7</p>
+                    <p class="text-muted small mb-3"><i class="bi bi-telephone text-pink me-2"></i><strong>Телефон:</strong> +7 (900) 000-00-00</p>
+                    <p class="text-muted small mb-3"><i class="bi bi-envelope text-pink me-2"></i><strong>Email:</strong> info@kirinotani.web</p>
+                    <p class="text-muted small mb-4"><i class="bi bi-clock text-pink me-2"></i><strong>Режим работы:</strong> Круглосуточно</p>
+                    <a href="tel:+79000000000" class="btn btn-sakura w-100 rounded-pill py-2">
+                        <i class="bi bi-telephone-fill me-2"></i> Позвонить администратору
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <!-- Адаптивный блок карты Яндекс -->
+                <div class="w-100 rounded-4 overflow-hidden shadow-sm border border-secondary border-opacity-10 position-relative" style="min-height: 350px;">
+                    <script type="text/javascript" charset="utf-8" async src="https://api-maps.yandex.ru/services/constructor/1.0/js/?um=constructor%3A27f3918f0dc105aab187240caa2b5bf3a01a498920f8762f0e3c072d3e8dbb6f&amp;width=100%25&amp;height=100%25&amp;lang=ru_RU&amp;scroll=true"></script>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

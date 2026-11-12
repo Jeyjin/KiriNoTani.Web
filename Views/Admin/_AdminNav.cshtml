@@ -1,0 +1,22 @@
+﻿@{
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex gap-2">
+        <a asp-action="Index" class="btn @(currentAction == "Index" ? "btn-sakura" : "btn-sakura-outline") rounded-pill px-4">Бронирования</a>
+        <a asp-action="Calendar" class="btn @(currentAction == "Calendar" ? "btn-sakura" : "btn-sakura-outline") rounded-pill px-4">
+            <i class="bi bi-calendar3 me-1"></i> Календарь
+        </a>
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-action="Services" class="btn @(currentAction == "Services" ? "btn-sakura" : "btn-sakura-outline") rounded-pill px-4">Услуги</a>
+        }
+        <a asp-action="Reviews" class="btn @(currentAction == "Reviews" ? "btn-sakura" : "btn-sakura-outline") rounded-pill px-4">Отзывы</a>
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-action="Users" class="btn @(currentAction == "Users" ? "btn-sakura" : "btn-sakura-outline") rounded-pill px-4">Пользователи</a>
+        }
+    </div>
+    <span class="badge bg-dark px-3 py-2 rounded-pill">Роль: @User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value</span>
+</div>

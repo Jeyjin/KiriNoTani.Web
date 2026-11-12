@@ -1,0 +1,39 @@
+﻿@model dynamic
+
+@{
+    ViewData["Title"] = "О базе отдыха";
+}
+
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <span class="text-pink fw-bold text-uppercase small tracking-widest">KiriNoTani • 霧の谷</span>
+        <h1 class="fw-bold">О нашей базе отдыха</h1>
+        <p class="text-muted">Атмосфера традиционной Японии, тишина природы и уют</p>
+    </div>
+
+    <!-- Информационный блок -->
+    <div class="row g-5 align-items-center mb-5">
+        <div class="col-lg-6">
+            <h2 class="h3 fw-bold mb-3">Гармония, уединение и сервис</h2>
+            <p class="text-muted">База отдыха KiriNoTani предлагает вам отправиться в погружение с японской культурой отдыха. Мы создали идеальное место для восстановления сил: традиционные банные чаны Фуросэ, чайные домики, тихие аллеи сакуры и утренний туман над озером.</p>
+        </div>
+        <div class="col-lg-6">
+            <div class="p-4 bg-white rounded-4 shadow-sm border">
+                <h4 class="h5 fw-bold mb-3">Контактная информация</h4>
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-2"><i class="bi bi-geo-alt text-pink me-2"></i> <strong>Адрес:</strong> Японская долина, ул. Туманная, д. 7</li>
+                    <li class="mb-2"><i class="bi bi-telephone text-pink me-2"></i> <strong>Телефон:</strong> +7 (900) 000-00-00</li>
+                    <li class="mb-2"><i class="bi bi-envelope text-pink me-2"></i> <strong>Email:</strong> info@kirinotani.web</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Интерактивная карта Яндекс -->
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden p-2 bg-white">
+        <h3 class="h5 fw-bold p-3 mb-0">Схема проезда</h3>
+        <div class="w-100 rounded-4 overflow-hidden shadow-sm border border-secondary border-opacity-10 position-relative" style="min-height: 350px;">
+            <script type="text/javascript" charset="utf-8" async src="https://api-maps.yandex.ru/services/constructor/1.0/js/?um=constructor%3A27f3918f0dc105aab187240caa2b5bf3a01a498920f8762f0e3c072d3e8dbb6f&amp;width=100%25&amp;height=100%25&amp;lang=ru_RU&amp;scroll=true"></script>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,119 @@
+﻿@model KiriNoTani.Web.Models.Booking
+
+@{
+ViewData["Title"] = "Онлайн-бронирование";
+var services = ViewBag.Services as List<KiriNoTani.Web.Models.Service>;
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white">
+                <div class="text-center mb-4">
+                    <span class="text-pink fw-bold text-uppercase small tracking-widest">KiriNoTani 霧の谷</span>
+                    <h1 class="h3 fw-bold mt-1">Оформление бронирования</h1>
+                    <p class="text-muted small">Заполните форму ниже, чтобы выбрать домик, дату и дополнительные опции для вашего отдыха.</p>
+                </div>
+
+                <form asp-action="Create" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <!-- 1. Выбор основного домика / услуги -->
+                    <div class="mb-4">
+                        <label asp-for="ServiceId" class="form-label fw-bold">1. Выберите вариант проживания / услугу</label>
+                        <select asp-for="ServiceId" class="form-select rounded-pill border-0 bg-light py-2 px-3" required>
+                            <option value="">-- Выберите услугу из списка --</option>
+                            @if (services != null)
+                            {
+                            @foreach (var s in services)
+                            {
+                            <option value="@s.Id">@s.Title — @s.Price.ToString("N0") ₽</option>
+                            }
+                            }
+                        </select>
+                        <span asp-validation-for="ServiceId" class="text-danger small"></span>
+                    </div>
+
+                    <!-- 2. Дата, время и количество гостей -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label asp-for="CheckInDate" class="form-label fw-bold">2. Дата заезда</label>
+                            <input asp-for="CheckInDate" class="form-control rounded-pill border-0 bg-light py-2 px-3" type="date" min="@DateTime.Today.ToString("yyyy-MM-dd")" required />
+                            <span asp-validation-for="CheckInDate" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="TimeSlot" class="form-label fw-bold">Время заезда</label>
+                            <select asp-for="TimeSlot" class="form-select rounded-pill border-0 bg-light py-2 px-3">
+                                <option value="12:00">12:00 (Ранний заезд)</option>
+                                <option value="14:00" selected>14:00 (Стандарт)</option>
+                                <option value="16:00">16:00 (Вечерний заезд)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="GuestsCount" class="form-label fw-bold">Кол-во гостей</label>
+                            <input asp-for="GuestsCount" type="number" min="1" max="10" class="form-control rounded-pill border-0 bg-light py-2 px-3" required />
+                            <span asp-validation-for="GuestsCount" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <!-- 3. Дополнительные услуги (Чекбоксы) -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold d-block">3. Дополнительные услуги</label>
+                        <div class="row g-2">
+                            <div class="col-md-6">
+                                <div class="form-check p-3 bg-light rounded-4 border border-light">
+                                    <input class="form-check-input ms-1 me-2" type="checkbox" name="selectedAddons" value="Японский банный чан (+3 500 ₽)" id="addon1">
+                                    <label class="form-check-input-label small text-dark" for="addon1">
+                                        <strong>Японский банный чан</strong> (+3 500 ₽)
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check p-3 bg-light rounded-4 border border-light">
+                                    <input class="form-check-input ms-1 me-2" type="checkbox" name="selectedAddons" value="Чайная церемония (+2 000 ₽)" id="addon2">
+                                    <label class="form-check-input-label small text-dark" for="addon2">
+                                        <strong>Чайная церемония</strong> (+2 000 ₽)
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check p-3 bg-light rounded-4 border border-light">
+                                    <input class="form-check-input ms-1 me-2" type="checkbox" name="selectedAddons" value="Традиционный завтрак (+1 200 ₽)" id="addon3">
+                                    <label class="form-check-input-label small text-dark" for="addon3">
+                                        <strong>Традиционный японский завтрак</strong> (+1 200 ₽)
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check p-3 bg-light rounded-4 border border-light">
+                                    <input class="form-check-input ms-1 me-2" type="checkbox" name="selectedAddons" value="Трансфер до базы (+1 500 ₽)" id="addon4">
+                                    <label class="form-check-input-label small text-dark" for="addon4">
+                                        <strong>Трансфер до базы</strong> (+1 500 ₽)
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. Данные гостя -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label asp-for="GuestName" class="form-label fw-bold">4. Ваше имя</label>
+                            <input asp-for="GuestName" class="form-control rounded-pill border-0 bg-light py-2 px-3" placeholder="например, Анастасия" required />
+                            <span asp-validation-for="GuestName" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Phone" class="form-label fw-bold">Номер телефона</label>
+                            <input asp-for="Phone" class="form-control rounded-pill border-0 bg-light py-2 px-3" placeholder="+7 (900) 000-00-00" required />
+                            <span asp-validation-for="Phone" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-sakura w-100 rounded-pill py-3 fw-bold shadow-sm">
+                        <i class="bi bi-check-circle me-2"></i>Подтвердить и отправить заявку
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

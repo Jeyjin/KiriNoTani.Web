@@ -1,0 +1,39 @@
+﻿@model KiriNoTani.Web.Models.Service
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="container py-5">
+    <div class="row g-5 align-items-center">
+        <div class="col-lg-6">
+            @if (string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <div class="img-placeholder rounded-4 shadow-sm" style="height: 380px;">
+                    <i class="bi bi-tree display-1 opacity-75"></i>
+                </div>
+            }
+            else
+            {
+                <img src="@Model.ImageUrl" class="img-fluid rounded-4 shadow-sm w-100" alt="@Model.Title" style="max-height: 400px; object-fit: cover;">
+            }
+        </div>
+        <div class="col-lg-6">
+            <span class="text-pink fw-bold text-uppercase small tracking-widest">Детали услуги</span>
+            <h1 class="fw-bold mb-3">@Model.Title</h1>
+            <p class="fs-4 text-pink fw-bold mb-4">@Model.Price.ToString("N0") ₽</p>
+            
+            <p class="text-muted mb-4">@(string.IsNullOrEmpty(Model.FullDescription) ? Model.Description : Model.FullDescription)</p>
+
+            <div class="d-flex gap-3">
+                <!-- Исправленная кнопка бронирования -->
+                <a asp-controller="Booking" asp-action="Index" asp-route-serviceId="@Model.Id" class="btn btn-sakura rounded-pill px-5 py-3 fw-bold shadow-sm">
+                    Забронировать эту услугу
+                </a>
+                <a asp-controller="Services" asp-action="Index" class="btn btn-sakura-outline rounded-pill px-4 py-3">
+                    Назад к услугам
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

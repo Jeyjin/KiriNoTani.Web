@@ -1,0 +1,46 @@
+﻿@model KiriNoTani.Web.Models.Booking
+
+@{
+    ViewData["Title"] = "Заявка принята";
+}
+
+<div class="container py-5 text-center">
+    <div class="card border-0 shadow-sm rounded-4 p-5 bg-white mx-auto" style="max-width: 650px;">
+        <div class="mb-3 text-pink display-3">
+            <i class="bi bi-bell-fill"></i>
+        </div>
+        <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill mb-3 mx-auto">Уведомление отправлено администратору</span>
+        <h1 class="h3 fw-bold mb-3">Бронирование #@Model.Id успешно создано!</h1>
+        <p class="text-muted small mb-4">Спасибо за выбор KiriNoTani. Ниже приведены детали вашей заявки:</p>
+
+        <div class="bg-light p-4 rounded-4 text-start mb-4 border border-light">
+            <div class="row g-2 small">
+                <div class="col-6 text-muted">Основная услуга:</div>
+                <div class="col-6 fw-bold text-end">@(Model.Service?.Title ?? "Не указано")</div>
+
+                <div class="col-6 text-muted">Дата и время заезда:</div>
+                <div class="col-6 fw-bold text-end">@Model.CheckInDate.ToString("dd.MM.yyyy") в @Model.TimeSlot</div>
+
+                <div class="col-6 text-muted">Количество гостей:</div>
+                <div class="col-6 fw-bold text-end">@Model.GuestsCount чел.</div>
+
+                <div class="col-6 text-muted">Дополнительно:</div>
+                <div class="col-6 fw-bold text-end text-pink">@Model.AdditionalServices</div>
+
+                <div class="col-6 text-muted">Имя и телефон:</div>
+                <div class="col-6 fw-bold text-end">@Model.GuestName (@Model.Phone)</div>
+
+                <div class="col-6 text-muted">Текущий статус:</div>
+                <div class="col-6 fw-bold text-end text-warning">@Model.Status</div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-center gap-3">
+            <a asp-controller="Home" asp-action="Index" class="btn btn-sakura-outline rounded-pill px-4">На главную</a>
+            @if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                <a asp-controller="Account" asp-action="Profile" class="btn btn-sakura rounded-pill px-4">В личный кабинет</a>
+            }
+        </div>
+    </div>
+</div>
