@@ -33,29 +33,19 @@ namespace KiriNoTani.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Review review)
         {
-            // Автоматически берем имя авторизованного пользователя
             var userName = User.FindFirstValue(ClaimTypes.Name) ?? User.Identity?.Name ?? "Гость";
             review.Author = userName;
 
-            if (ModelState.IsValid)
-            {
-                review.CreatedAt = DateTime.Now;
-                review.IsApproved = true; // Отправляем на модерацию
-                review.IsFeatured = false;
+            // УБИРАЕМ ПОКА ПРОВЕРКУ ModelState, ЧТОБЫ ПОНЯТЬ, СОХРАНИТСЯ ЛИ
+            review.CreatedAt = DateTime.Now;
+            review.IsApproved = true; // Сразу одобряем для теста
+            review.IsFeatured = false;
 
-                _context.Reviews.Add(review);
-                await _context.SaveChangesAsync();
+            _context.Reviews.Add(review);
+            await _context.SaveChangesAsync(); // <-- Сохраняем принудительно
 
-                TempData["Message"] = "Спасибо! Ваш отзыв успешно отправлен и появится на сайте после проверки администратором.";
-                return RedirectToAction(nameof(Index));
-            }
-
-            var approvedReviews = await _context.Reviews
-                .Where(r => r.IsApproved)
-                .OrderByDescending(r => r.CreatedAt)
-                .ToListAsync();
-
-            return View("Index", approvedReviews);
+            TempData["Message"] = "Отзыв успешно сохранен!";
+            return RedirectToAction(nameof(Index));
         }
     }
 }
