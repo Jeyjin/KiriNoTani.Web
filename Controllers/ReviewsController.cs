@@ -27,25 +27,38 @@ namespace KiriNoTani.Web.Controllers
             return View(approvedReviews);
         }
 
-        // POST: /Reviews/Create — только для авторизованных
+// POST: /Reviews/Create — только для авторизованных
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Review review)
         {
+            // Автоматически берем имя авторизованного пользователя
             var userName = User.FindFirstValue(ClaimTypes.Name) ?? User.Identity?.Name ?? "Гость";
             review.Author = userName;
 
-            // УБИРАЕМ ПОКА ПРОВЕРКУ ModelState, ЧТОБЫ ПОНЯТЬ, СОХРАНИТСЯ ЛИ
-            review.CreatedAt = DateTime.Now;
-            review.IsApproved = true; // Сразу одобряем для теста
-            review.IsFeatured = false;
+            // Убираем обязательные поля из проверки ModelState, если форма их не шлет с фронта
+            ModelState.Remove(nameof(Review.Author));
 
-            _context.Reviews.Add(review);
-            await _context.SaveChangesAsync(); // <-- Сохраняем принудительно
+            if (ModelState.IsValid)
+            {
+                review.CreatedAt = DateTime.Now;
+                review.IsApproved = false; // ВЕРНУЛИ МОДЕРАЦИЮ: отзыв ждет одобрения админа
+                review.IsFeatured = false;
 
-            TempData["Message"] = "Отзыв успешно сохранен!";
-            return RedirectToAction(nameof(Index));
+                _context.Reviews.Add(review);
+                await _context.SaveChangesAsync();
+
+                TempData["Message"] = "Спасибо! Ваш отзыв отправлен на модерацию и появится на сайте после проверки администратором.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var approvedReviews = await _context.Reviews
+                .Where(r => r.IsApproved)
+                .OrderByDescending(r => r.CreatedAt)
+                .ToListAsync();
+
+            return View("Index", approvedReviews);
         }
     }
 }
