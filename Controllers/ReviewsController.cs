@@ -40,7 +40,7 @@ namespace KiriNoTani.Web.Controllers
             if (ModelState.IsValid)
             {
                 review.CreatedAt = DateTime.Now;
-                review.IsApproved = false; // Отправляем на модерацию
+                review.IsApproved = true; // Отправляем на модерацию
                 review.IsFeatured = false;
 
                 _context.Reviews.Add(review);
