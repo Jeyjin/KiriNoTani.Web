@@ -33,17 +33,24 @@ namespace KiriNoTani.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Review review)
         {
-            // Автоматически берем имя авторизованного пользователя
-            var userName = User.FindFirstValue(ClaimTypes.Name) ?? User.Identity?.Name ?? "Гость";
-            review.Author = userName;
+            // 1. Получаем email текущего залогиненного пользователя
+            var userEmail = User.Identity?.Name;
 
-            // Убираем обязательные поля из проверки ModelState, если форма их не шлет с фронта
+            // 2. Ищем пользователя в базе по почте, чтобы забрать его реальное Name
+            var dbUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
+
+            // 3. Записываем имя: если в профиле есть Name, берем его, иначе fallback на email/логин
+            review.Author = dbUser != null && !string.IsNullOrEmpty(dbUser.Name) 
+                ? dbUser.Name 
+                : (userEmail ?? "Пользователь");
+
+            // Убираем Author из проверки ModelState, так как мы заполнили его в коде
             ModelState.Remove(nameof(Review.Author));
 
             if (ModelState.IsValid)
             {
                 review.CreatedAt = DateTime.Now;
-                review.IsApproved = false; // ВЕРНУЛИ МОДЕРАЦИЮ: отзыв ждет одобрения админа
+                review.IsApproved = false; // Модерация активна
                 review.IsFeatured = false;
 
                 _context.Reviews.Add(review);
