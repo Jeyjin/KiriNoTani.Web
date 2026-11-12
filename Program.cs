@@ -7,12 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 
-var dbPath = Path.Combine(
-    builder.Environment.ContentRootPath,
-    "..",
-    "private",
-    "KiriNoTani.db"
-);
+var dbPath = Path.Combine(builder.Environment.ContentRootPath, "..", "private", "KiriNoTani.db");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite($"Data Source={dbPath}"));

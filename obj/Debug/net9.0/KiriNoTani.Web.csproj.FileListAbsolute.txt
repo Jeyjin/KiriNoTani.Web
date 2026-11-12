@@ -292,3 +292,4 @@ C:\Users\HOME\RiderProjects\KiriNoTani.Web\KiriNoTani.Web\obj\Debug\net9.0\KiriN
 C:\Users\HOME\RiderProjects\KiriNoTani.Web\KiriNoTani.Web\obj\Debug\net9.0\KiriNoTani.Web.genruntimeconfig.cache
 C:\Users\HOME\RiderProjects\KiriNoTani.Web\KiriNoTani.Web\obj\Debug\net9.0\ref\KiriNoTani.Web.dll
 C:\Users\HOME\RiderProjects\KiriNoTani.web\KiriNoTani.Web\obj\Debug\net9.0\compressed\kwbfvanq9x-u9sad95ms1.gz
+C:\Users\HOME\RiderProjects\KiriNoTani.web\KiriNoTani.Web\obj\Debug\net9.0\KiriNoTani.Web.sourcelink.json

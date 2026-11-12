@@ -9,6 +9,8 @@ namespace KiriNoTani.Web.Models
         [Required(ErrorMessage = "Выберите услугу")]
         public int ServiceId { get; set; }
         public Service? Service { get; set; }
+        
+        public string? UserId { get; set; }
 
         [Required(ErrorMessage = "Введите ваше имя")]
         [Display(Name = "Имя гостя")]

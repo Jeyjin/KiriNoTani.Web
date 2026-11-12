@@ -85,7 +85,7 @@ namespace KiriNoTani.Web.Controllers
             return View(model);
         }
 
-        // GET: /Account/Profile (Личный кабинет)
+// GET: /Account/Profile (Личный кабинет)
         [Authorize]
         public async Task<IActionResult> Profile()
         {
@@ -97,10 +97,13 @@ namespace KiriNoTani.Web.Controllers
                 return RedirectToAction("Login");
             }
 
-            // Загружаем бронирования пользователя (по имени или email)
+            // Получаем ID текущего авторизованного пользователя
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            // Загружаем бронирования строго по привязанному UserId (с подгрузкой услуг)
             var bookings = await _context.Bookings
                 .Include(b => b.Service)
-                .Where(b => b.GuestName == user.Name || b.Phone == user.Email)
+                .Where(b => b.UserId == currentUserId)
                 .ToListAsync();
 
             ViewBag.UserBookings = bookings;

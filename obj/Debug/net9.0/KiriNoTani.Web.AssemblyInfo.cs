@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("KiriNoTani.Web")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3c426bc2da75d48af4928a917d4568c84d74c6f8")]
 [assembly: System.Reflection.AssemblyProductAttribute("KiriNoTani.Web")]
 [assembly: System.Reflection.AssemblyTitleAttribute("KiriNoTani.Web")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using KiriNoTani.Web.Data;
 using KiriNoTani.Web.Models;
+using System.Security.Claims;
 
 namespace KiriNoTani.Web.Controllers
 {
@@ -39,6 +40,9 @@ namespace KiriNoTani.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Booking booking, string[] selectedAddons)
         {
+            // 1. Привязываем бронирование к текущему авторизованному пользователю
+            booking.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
             if (selectedAddons != null && selectedAddons.Length > 0)
             {
                 booking.AdditionalServices = string.Join(", ", selectedAddons);
@@ -54,7 +58,7 @@ namespace KiriNoTani.Web.Controllers
                 booking.CreatedAt = DateTime.Now;
                 _context.Bookings.Add(booking);
                 await _context.SaveChangesAsync();
-                
+        
                 // Переходим на страницу успешного подтверждения с ID брони
                 return RedirectToAction(nameof(Success), new { id = booking.Id });
             }
