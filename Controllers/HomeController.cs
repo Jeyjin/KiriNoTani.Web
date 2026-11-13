@@ -16,8 +16,7 @@ namespace KiriNoTani.Web.Controllers
             _logger = logger;
             _context = context;
         }
-
-        // Единственный и правильный метод Index
+        
         public async Task<IActionResult> Index()
         {
             ViewBag.FeaturedServices = await _context.Services.Take(3).ToListAsync();

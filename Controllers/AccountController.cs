@@ -46,7 +46,7 @@ namespace KiriNoTani.Web.Controllers
                 {
                     Name = model.Name,
                     Email = model.Email,
-                    Password = model.Password, // Для упрощения храним так (в колледже этого достаточно)
+                    Password = model.Password, 
                     Role = userRole
                 };
 

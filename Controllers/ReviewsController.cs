@@ -44,13 +44,13 @@ namespace KiriNoTani.Web.Controllers
                 ? dbUser.Name 
                 : (userEmail ?? "Пользователь");
 
-            // Убираем Author из проверки ModelState, так как мы заполнили его в коде
+            
             ModelState.Remove(nameof(Review.Author));
 
             if (ModelState.IsValid)
             {
                 review.CreatedAt = DateTime.Now;
-                review.IsApproved = false; // Модерация активна
+                review.IsApproved = false; 
                 review.IsFeatured = false;
 
                 _context.Reviews.Add(review);
