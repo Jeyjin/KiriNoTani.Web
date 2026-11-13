@@ -84,26 +84,70 @@ namespace KiriNoTani.Web.Controllers
             return View(services);
         }
 
+        // СОЗДАНИЕ НОВОЙ УСЛУГИ
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<IActionResult> SaveService(Service service)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateService(Service service, IFormFile? imageFile)
         {
+            if (imageFile != null && imageFile.Length > 0)
+            {
+                service.ImageUrl = await SaveImageAsync(imageFile);
+            }
+
+            ModelState.Remove(nameof(service.ImageUrl));
+
             if (ModelState.IsValid)
             {
-                if (service.Id == 0)
-                {
-                    _context.Services.Add(service);
-                }
-                else
-                {
-                    _context.Services.Update(service);
-                }
+                _context.Services.Add(service);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Services));
             }
             return View("Services", await _context.Services.ToListAsync());
         }
 
+        // ОТКРЫТИЕ СТРАНИЦЫ РЕДАКТИРОВАНИЯ
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> EditService(int id)
+        {
+            var service = await _context.Services.FindAsync(id);
+            if (service == null) return NotFound();
+
+            return View(service);
+        }
+
+        // СОХРАНЕНИЕ ИЗМЕНЕНИЙ
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditService(int id, Service service, IFormFile? imageFile)
+        {
+            if (id != service.Id) return NotFound();
+
+            var existingService = await _context.Services.AsNoTracking().FirstOrDefaultAsync(s => s.Id == id);
+            if (existingService == null) return NotFound();
+
+            if (imageFile != null && imageFile.Length > 0)
+            {
+                service.ImageUrl = await SaveImageAsync(imageFile);
+            }
+            else
+            {
+                service.ImageUrl = existingService.ImageUrl; // Сохраняем старую картинку
+            }
+
+            ModelState.Remove(nameof(service.ImageUrl));
+
+            if (ModelState.IsValid)
+            {
+                _context.Services.Update(service);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Services));
+            }
+            return View(service);
+        }
+
+        // УДАЛЕНИЕ УСЛУГИ (Оставлен только один экземпляр метода)
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> DeleteService(int id)
@@ -117,8 +161,27 @@ namespace KiriNoTani.Web.Controllers
             return RedirectToAction(nameof(Services));
         }
 
+        // Вспомогательный метод для сохранения картинки на сервер
+        private async Task<string> SaveImageAsync(IFormFile imageFile)
+        {
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/services");
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
+            var uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(imageFile.FileName);
+            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await imageFile.CopyToAsync(fileStream);
+            }
+
+            return "/images/services/" + uniqueFileName;
+        }
+
         // 4. ПРОСМОТР И МОДЕРАЦИЯ ОТЗЫВОВ
-        // Просмотр отзывов (Доступно: Admin, Manager)
         public async Task<IActionResult> Reviews()
         {
             var reviews = await _context.Reviews
@@ -128,7 +191,6 @@ namespace KiriNoTani.Web.Controllers
             return View(reviews);
         }
 
-        // Вывод отзывов на Главную (Доступно: Admin, Manager)
         [HttpPost]
         public async Task<IActionResult> ToggleFeaturedReview(int id)
         {
@@ -138,14 +200,13 @@ namespace KiriNoTani.Web.Controllers
                 review.IsFeatured = !review.IsFeatured;
                 if (review.IsFeatured)
                 {
-                    review.IsApproved = true; // При выводе на главную авто-одобряем
+                    review.IsApproved = true;
                 }
                 await _context.SaveChangesAsync();
             }
             return RedirectToAction(nameof(Reviews));
         }
 
-        // Одобрение отзывов (Только Admin)
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> ApproveReview(int id)
@@ -159,7 +220,6 @@ namespace KiriNoTani.Web.Controllers
             return RedirectToAction(nameof(Reviews));
         }
 
-        // Удаление отзывов (Только Admin)
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> DeleteReview(int id)
