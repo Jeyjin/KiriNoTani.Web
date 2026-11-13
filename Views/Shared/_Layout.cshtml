@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
     <!-- Верхнее меню -->
     <header>
         <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-3">
@@ -64,14 +64,13 @@
         </nav>
     </header>
 
-    <!-- Основной контент -->
-    <main role="main">
+    <!-- Основной контент (flex-grow-1 растягивает его и держит футер внизу) -->
+    <main role="main" class="flex-grow-1">
         @RenderBody()
     </main>
 
     <!-- Подвал сайта -->
-    <!-- Подвал сайта -->
-    <footer class="footer bg-dark text-light py-5 mt-5">
+    <footer class="footer bg-dark text-light py-5 mt-auto">
         <div class="container">
             <div class="row g-4">
                 <div class="col-md-3">
